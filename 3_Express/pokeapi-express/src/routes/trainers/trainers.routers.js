@@ -1,10 +1,21 @@
 const express = require('express');
 const trainerRouter = express.Router();
 
-
 trainerRouter.get("/", (req, res) => {
-    res.send("hola mundo");
+    const obj = [{
+        id: 1,
+        name: "David Palacios",
+        edad: 24,
+        region: 1,
+    },{
+        id: '1',
+        name: "Ash Ketchum",
+        age: 10,
+        region: '3'
+    }];
+    res.json(obj);
 });
+
 trainerRouter.get("/trainer", (req, res) => {
     const obj = {
         id: 1,
@@ -39,6 +50,31 @@ trainerRouter.post('/trainer', (req, res) => {
         message: 'created',
         data: body
     });
+});
+
+trainerRouter.delete('/', (req,res) =>{
+    const id = req.params.id;
+    res.json({
+        message: 'deleted',
+        id,
+    })
+});
+trainerRouter.put('/:id', (req,res)=>{
+    const body = req.body;
+    const id = req.params.id;
+    res.json({
+        message: 'update all',
+        id,
+        data: body
+    })
+});
+trainerRouter.patch('/:id', (req,res)=>{
+    const body = req.body;
+    const id = req.params.id;
+    res.json({
+        message: 'update partial',
+        id,
+    })
 });
 
 module.exports = trainerRouter
