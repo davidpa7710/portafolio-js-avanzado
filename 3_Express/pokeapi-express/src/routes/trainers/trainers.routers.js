@@ -10,44 +10,22 @@ trainerRouter.get("/", (req, res) => {
     let pagination = {};
     if (page && size) {
         pagination = { page, size };
-	} 
+    }
     let data = {
         data: allTrainers,
         pagination
     }
-	res.json(data);
+    res.json(data);
+});
+trainerRouter.get("/:id", (req, res) => {
+    const id = req.params.id;
+    const trainer = serviceTrainerObject.findOne(id)
+    res.json(trainer);
 });
 
-trainerRouter.get("/trainer", (req, res) => {
-    const obj = {
-        id: 1,
-        name: "David Palacios",
-        edad: 24,
-        region: 1,
-    };
-    res.json(obj);
-});
-trainerRouter.get("/trainer/:idTrainer/region/:idRegion", (req, res) => {
-    const { idTrainer, idRegion } = req.params
-    const obj = {
-        id: idTrainer,
-        name: "Ash Ketchum",
-        age: 10,
-        region: idRegion
-    };
-    res.json(obj);
-});
-trainerRouter.get("/trainers", (req, res) => {
-    const { page, size } = req.query;
-    if (page && size) {
-        res.json({ page, size });
-    } else {
-        res.send('Parametros Obligatorios')
-    }
-});
-
-trainerRouter.post('/trainer', (req, res) => {
+trainerRouter.post('/', (req, res) => {
     const body = req.body;
+    serviceTrainerObject.create(body);
     res.json({
         message: 'created',
         data: body
@@ -56,28 +34,32 @@ trainerRouter.post('/trainer', (req, res) => {
 trainerRouter.patch('/:id', (req, res) => {
     const body = req.body;
     const id = req.params.id;
+    serviceTrainerObject.editPartial(id, body);
     res.json({
-        message: 'update partial',
+        message: 'updated partial',
         id,
         data: body
-    })
+    });
 });
+
 trainerRouter.put('/:id', (req, res) => {
     const body = req.body;
     const id = req.params.id;
+    serviceTrainerObject.updateComplete(id, body);
     res.json({
-        message: 'update all',
+        message: 'updated all',
         id,
         data: body
-    })
+    });
 });
 
-trainerRouter.delete('/', (req, res) => {
+trainerRouter.delete('/:id', (req, res) => {
     const id = req.params.id;
+    serviceTrainerObject.delete(id);
     res.json({
         message: 'deleted',
-        id,
-    })
+        id
+    });
 });
 
 module.exports = trainerRouter
