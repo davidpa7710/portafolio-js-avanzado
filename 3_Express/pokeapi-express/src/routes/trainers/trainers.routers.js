@@ -1,19 +1,21 @@
 const express = require('express');
 const trainerRouter = express.Router();
+const TrainersServices = require('../../services/trainers/trainers.services');
+
+const serviceTrainerObject = new TrainersServices();
 
 trainerRouter.get("/", (req, res) => {
-    const obj = [{
-        id: 1,
-        name: "David Palacios",
-        edad: 24,
-        region: 1,
-    },{
-        id: '1',
-        name: "Ash Ketchum",
-        age: 10,
-        region: '3'
-    }];
-    res.json(obj);
+    const { page, size } = req.query;
+    const allTrainers = serviceTrainerObject.find();
+    let pagination = {};
+    if (page && size) {
+        pagination = { page, size };
+	} 
+    let data = {
+        data: allTrainers,
+        pagination
+    }
+	res.json(data);
 });
 
 trainerRouter.get("/trainer", (req, res) => {
@@ -25,7 +27,7 @@ trainerRouter.get("/trainer", (req, res) => {
     };
     res.json(obj);
 });
-trainerRouter.get("/trainer/:idTrainer/regin/idRegion", (req, res) => {
+trainerRouter.get("/trainer/:idTrainer/region/:idRegion", (req, res) => {
     const { idTrainer, idRegion } = req.params
     const obj = {
         id: idTrainer,
@@ -51,15 +53,16 @@ trainerRouter.post('/trainer', (req, res) => {
         data: body
     });
 });
-
-trainerRouter.delete('/', (req,res) =>{
+trainerRouter.patch('/:id', (req, res) => {
+    const body = req.body;
     const id = req.params.id;
     res.json({
-        message: 'deleted',
+        message: 'update partial',
         id,
+        data: body
     })
 });
-trainerRouter.put('/:id', (req,res)=>{
+trainerRouter.put('/:id', (req, res) => {
     const body = req.body;
     const id = req.params.id;
     res.json({
@@ -68,11 +71,11 @@ trainerRouter.put('/:id', (req,res)=>{
         data: body
     })
 });
-trainerRouter.patch('/:id', (req,res)=>{
-    const body = req.body;
+
+trainerRouter.delete('/', (req, res) => {
     const id = req.params.id;
     res.json({
-        message: 'update partial',
+        message: 'deleted',
         id,
     })
 });
